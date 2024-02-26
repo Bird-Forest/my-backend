@@ -22,12 +22,12 @@ router.get("/current", authenticate, ctrl.current);
 
 router.post("/logout", authenticate, ctrl.logout);
 
-router.patch(
-  "/:_id/subscription",
-  authenticate,
-  validateBody(schemas.subscriptionSchema),
-  ctrl.updateStatusUser
-);
+// router.patch(
+//   "/:_id/subscription",
+//   authenticate,
+//   validateBody(schemas.subscriptionSchema),
+//   ctrl.updateStatusUser
+// );
 
 router.patch(
   "/avatars",

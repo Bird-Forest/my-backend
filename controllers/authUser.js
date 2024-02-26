@@ -10,13 +10,14 @@ const Jimp = require("jimp");
 const { User } = require("../models/user");
 const { HttpError } = require("../helper");
 const { ctrlWrapper } = require("../middleware");
+const { nanoid } = require("nanoid");
 
 const { SEKRET_KEY } = process.env;
 
 const avatarDir = path.join(__dirname, "../", "public", "avatars");
 
 const register = async (req, res) => {
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
 
   const user = await User.findOne({ email });
   if (user) {
@@ -24,13 +25,14 @@ const register = async (req, res) => {
   }
   const hashPassword = await bcrypt.hash(password, 10);
   const avatarURL = gravatar.url(email);
-  // const verificationToken = nanoid();
+  const verificationCode = nanoid();
 
   const newUser = await User.create({
     ...req.body,
+    name,
     password: hashPassword,
     avatarURL,
-    // verificationToken,
+    verificationCode,
   });
 
   // const verifyEmail = {
@@ -41,8 +43,8 @@ const register = async (req, res) => {
 
   // await sendEmail(verifyEmail);
 
-  res.status(200).json({
-    user: { email: newUser.email, subscription: newUser.subscription },
+  res.status(201).json({
+    user: { name, email: newUser.email, avatarURL },
   });
 };
 
@@ -89,7 +91,7 @@ const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
-    throw HttpError(401, "Email or password is wrong, authUser 1");
+    throw HttpError(401, "Email is wrong, authUser 1");
   }
   // if (!user.verify) {
   //   throw HttpError(401, "Email not verified");
@@ -97,7 +99,7 @@ const login = async (req, res) => {
 
   const passwordCompare = await bcrypt.compare(password, user.password);
   if (!passwordCompare) {
-    throw HttpError(401, "Email or password is wrong, authUser 2");
+    throw HttpError(401, "Password is wrong, authUser 2");
   }
   const payload = {
     id: user._id,
@@ -105,15 +107,15 @@ const login = async (req, res) => {
   const token = jwt.sign(payload, SEKRET_KEY, { expiresIn: "23h" });
   await User.findByIdAndUpdate(user._id, { token });
 
-  res.status(200).json({
+  res.status(201).json({
     token,
-    user: { email: user.email, subscription: user.subscription },
+    user: { email: user.email },
   });
 };
 
 const current = async (req, res) => {
-  const { email, subscription } = req.user;
-  res.json({ email, subscription });
+  const { email } = req.user;
+  res.json({ email });
 };
 
 const logout = async (req, res) => {
@@ -125,14 +127,14 @@ const logout = async (req, res) => {
   });
 };
 
-const updateStatusUser = async (req, res) => {
-  const { _id } = req.params;
-  const subscription = await User.findByIdAndUpdate(_id, req.body, {
-    new: true,
-  });
+// const updateStatusUser = async (req, res) => {
+//   const { _id } = req.params;
+//   const subscription = await User.findByIdAndUpdate(_id, req.body, {
+//     new: true,
+//   });
 
-  res.json(subscription);
-};
+//   res.json(subscription);
+// };
 
 const updateAvatar = async (req, res) => {
   if (!req.file) {
@@ -167,6 +169,6 @@ module.exports = {
   login: ctrlWrapper(login),
   current: ctrlWrapper(current),
   logout: ctrlWrapper(logout),
-  updateStatusUser: ctrlWrapper(updateStatusUser),
+  // updateStatusUser: ctrlWrapper(updateStatusUser),
   updateAvatar: ctrlWrapper(updateAvatar),
 };
