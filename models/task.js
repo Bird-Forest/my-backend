@@ -3,11 +3,11 @@ const Joi = require("joi");
 
 const { handleMongooseError } = require("../helper");
 
-const colorList = ["#ff5252", "#ffee58", "#00e676"];
+const colorList = ["#64b5f6", "#ff5252", "#ffee58", "#00e676"];
 
 const taskSchema = new Schema(
   {
-    task: {
+    title: {
       type: String,
       requied: [true, "Set task"],
     },
@@ -15,10 +15,6 @@ const taskSchema = new Schema(
       type: String,
       enum: colorList,
       default: "#ffffff",
-    },
-    completed: {
-      type: Boolean,
-      default: false,
     },
     owner: {
       type: Schema.Types.ObjectId,
@@ -31,14 +27,14 @@ const taskSchema = new Schema(
 taskSchema.post("save", handleMongooseError);
 
 const addSchema = Joi.object({
-  task: Joi.string().required(),
-  color: Joi.string().required(),
-  completed: Joi.boolean().required(),
+  title: Joi.string().required(),
+  // color: Joi.string().required(),
+  // completed: Joi.boolean().required(),
 });
 
-const updateCompletedSchema = Joi.object({
-  completed: Joi.boolean().required(),
-});
+// const updateCompletedSchema = Joi.object({
+//   completed: Joi.boolean().required(),
+// });
 
 const updateColorSchema = Joi.object({
   color: Joi.string().required(),
@@ -46,7 +42,7 @@ const updateColorSchema = Joi.object({
 
 const schemas = {
   addSchema,
-  updateCompletedSchema,
+  // updateCompletedSchema,
   updateColorSchema,
 };
 

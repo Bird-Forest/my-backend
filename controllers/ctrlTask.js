@@ -25,16 +25,16 @@ const deleteTask = async (req, res) => {
   res.json({ message: "Task deleted" });
 };
 
-const updateTask = async (req, res) => {
-  const { taskId } = req.params;
-  const result = await Task.findByIdAndUpdate(taskId, req.body, {
-    new: true,
-  });
-  if (!result) {
-    throw HttpError(404, "Not found");
-  }
-  res.json(result);
-};
+// const updateTask = async (req, res) => {
+//   const { taskId } = req.params;
+//   const result = await Task.findByIdAndUpdate(taskId, req.body, {
+//     new: true,
+//   });
+//   if (!result) {
+//     throw HttpError(404, "Not found");
+//   }
+//   res.json(result);
+// };
 
 const updateColorTask = async (req, res) => {
   const { taskId } = req.params;
@@ -45,20 +45,20 @@ const updateColorTask = async (req, res) => {
   res.json(result);
 };
 
-const updateStatusTask = async (req, res) => {
-  const { taskId } = req.params;
-  const result = await Task.findByIdAndUpdate(taskId, req.body);
-  if (!result) {
-    throw HttpError(404, "Not found");
-  }
-  res.json(result);
-};
+// const updateStatusTask = async (req, res) => {
+//   const { taskId } = req.params;
+//   const result = await Task.findByIdAndUpdate(taskId, req.body);
+//   if (!result) {
+//     throw HttpError(404, "Not found");
+//   }
+//   res.json(result);
+// };
 
 module.exports = {
   listTasks: ctrlWrapper(listTasks),
   addTask: ctrlWrapper(addTask),
   deleteTask: ctrlWrapper(deleteTask),
-  updateTask: ctrlWrapper(updateTask),
+  // updateTask: ctrlWrapper(updateTask),
   updateColorTask: ctrlWrapper(updateColorTask),
-  updateStatusTask: ctrlWrapper(updateStatusTask),
+  // updateStatusTask: ctrlWrapper(updateStatusTask),
 };
