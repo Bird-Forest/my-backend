@@ -15,6 +15,7 @@ const authenticate = async (req, res, next) => {
   try {
     const { id } = jwt.verify(token, SEKRET_KEY);
     const user = await User.findById(id);
+    console.log("Authenticate token", user);
     if (!user || !user.token || user.token !== token) {
       next(HttpError(401, "Not authorized, authenticate 2"));
     }
@@ -26,3 +27,4 @@ const authenticate = async (req, res, next) => {
 };
 
 module.exports = authenticate;
+// (!user || !user.token || user.token !== token)

@@ -11,18 +11,22 @@ const listTasks = async (req, res) => {
 };
 
 const addTask = async (req, res) => {
+  // console.log(req.params);
   const { _id: owner } = req.user;
   const result = await Task.create({ ...req.body, owner });
+  // const result = await Task.create({ ...req.body });
   res.status(201).json(result);
 };
 
 const deleteTask = async (req, res) => {
   const { taskId } = req.params;
+  console.log("_id", taskId);
   const result = await Task.findByIdAndDelete(taskId);
+  console.log("result", result);
   if (!result) {
     throw HttpError(404, "Not found");
   }
-  res.json({ message: "Task deleted" });
+  res.json(result);
 };
 
 // const updateTask = async (req, res) => {
@@ -38,7 +42,9 @@ const deleteTask = async (req, res) => {
 
 const updateColorTask = async (req, res) => {
   const { taskId } = req.params;
+  console.log(taskId);
   const result = await Task.findByIdAndUpdate(taskId, req.body);
+  console.log(result);
   if (!result) {
     throw HttpError(404, "Not found");
   }

@@ -1,9 +1,8 @@
 const { Schema, model } = require("mongoose");
 const Joi = require("joi");
-
 const { handleMongooseError } = require("../helper");
 
-const colorList = ["#64b5f6", "#ff5252", "#ffee58", "#00e676"];
+const colorList = ["#ffffff", "#64b5f6", "#ff5252", "#ffee58", "#00e676"];
 
 const taskSchema = new Schema(
   {
@@ -28,7 +27,7 @@ taskSchema.post("save", handleMongooseError);
 
 const addSchema = Joi.object({
   title: Joi.string().required(),
-  // color: Joi.string().required(),
+  color: Joi.string(),
   // completed: Joi.boolean().required(),
 });
 

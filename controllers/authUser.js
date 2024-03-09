@@ -20,7 +20,7 @@ const register = async (req, res) => {
 
   const user = await User.findOne({ email });
   if (user) {
-    throw HttpError(404, "Not found");
+    throw HttpError(409, "Email already in use");
   }
   const hashPassword = await bcrypt.hash(password, 10);
   const avatarURL = gravatar.url(email);
@@ -33,14 +33,25 @@ const register = async (req, res) => {
     avatarURL,
     verificationCode,
   });
+  // console.log(newUser);
+
+  // const payload = {
+  //   _id: user.id,
+  // };
+  // const token = jwt.sign(payload, SEKRET_KEY, { expiresIn: "23h" });
+  // console.log(token);
+  // await User.findByIdAndUpdate(payload, { token });
+
+  // await User.findOne(user._id, { token });
 
   res.status(201).json({
     user: {
-      _id: verificationCode,
+      // _id: verificationCode,
       name: newUser.name,
       email: newUser.email,
       avatarURL,
     },
+    token: null,
   });
 };
 
