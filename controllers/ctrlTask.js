@@ -49,13 +49,33 @@ const deleteTask = async (req, res) => {
 
 const updateColorTask = async (req, res) => {
   const { taskId } = req.params;
-  console.log(taskId);
-  const result = await Task.findByIdAndUpdate(taskId, req.body);
-  console.log(result);
-  if (!result) {
+  const newColor = req.body.color;
+  console.log("id", taskId);
+  console.log("color", newColor);
+
+  const updatedTask = await Task.findByIdAndUpdate(
+    taskId,
+    { color: newColor },
+    { new: true } // Возвращать обновленный документ
+  );
+  console.log("upTask", updatedTask);
+  // const { newTask } = req.params;
+  // console.log("newTask", newTask);
+  // console.log(req.query);
+  // console.log("Params", req.params);
+  // const result = await Task.findByIdAndUpdate(
+  //   newTask.taskId,
+  //   {
+  //     ...req.body,
+  //     color: newTask.newColor,
+  //   },
+  //   { new: true }
+  // );
+
+  if (!updatedTask) {
     throw HttpError(404, "Not found");
   }
-  res.json(result);
+  res.json(updatedTask);
 };
 
 // const updateStatusTask = async (req, res) => {

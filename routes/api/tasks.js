@@ -15,13 +15,13 @@ router.post("/", authenticate, validateBody(schemas.addSchema), ctrl.addTask);
 
 router.delete("/:taskId", authenticate, isValidId, ctrl.deleteTask);
 
-// router.put(
-//   "/:taskId",
-//   authenticate,
-//   isValidId,
-//   validateBody(schemas.addSchema),
-//   ctrl.updateTask
-// );
+router.patch(
+  "/:taskId/color",
+  authenticate,
+  isValidId,
+  validateBody(schemas.updateColorSchema),
+  ctrl.updateColorTask
+);
 
 // router.patch(
 //   "/:taskId/completed",
@@ -31,12 +31,12 @@ router.delete("/:taskId", authenticate, isValidId, ctrl.deleteTask);
 //   ctrl.updateStatusTask
 // );
 
-router.patch(
-  "/:taskId/color",
-  authenticate,
-  isValidId,
-  validateBody(schemas.updateColorSchema),
-  ctrl.updateColorTask
-);
+// router.patch(
+//   "/:taskId/color",
+//   authenticate,
+//   isValidId,
+//   validateBody(schemas.updateColorSchema),
+//   ctrl.updateColorTask
+// );
 
 module.exports = router;
