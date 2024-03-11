@@ -18,11 +18,12 @@ const taskSchema = new Schema(
     owner: {
       type: Schema.Types.ObjectId,
       ref: "user",
+      requied: true,
     },
   },
   { versionKey: false, timestamps: true }
 );
-
+// !!! ref - "user" - це посилання на колекцію, з якої буде { _id: owner}
 taskSchema.post("save", handleMongooseError);
 
 const addSchema = Joi.object({

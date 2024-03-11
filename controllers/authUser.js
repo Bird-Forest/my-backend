@@ -33,20 +33,9 @@ const register = async (req, res) => {
     avatarURL,
     verificationCode,
   });
-  // console.log(newUser);
-
-  // const payload = {
-  //   _id: user.id,
-  // };
-  // const token = jwt.sign(payload, SEKRET_KEY, { expiresIn: "23h" });
-  // console.log(token);
-  // await User.findByIdAndUpdate(payload, { token });
-
-  // await User.findOne(user._id, { token });
 
   res.status(201).json({
     user: {
-      // _id: verificationCode,
       name: newUser.name,
       email: newUser.email,
       avatarURL,
@@ -72,7 +61,6 @@ const login = async (req, res) => {
   const token = jwt.sign(payload, SEKRET_KEY, { expiresIn: "23h" });
   await User.findByIdAndUpdate(user._id, { token });
 
-  // ******
   const avatar = gravatar.url(email);
 
   res.status(201).json({
@@ -82,6 +70,7 @@ const login = async (req, res) => {
 };
 
 const current = async (req, res) => {
+  // ** authenticate додає  req.user = user;
   const { email, name, avatarURL } = req.user;
   res.json({
     email,

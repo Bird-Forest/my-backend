@@ -7,14 +7,21 @@ const { ctrlWrapper } = require("../middleware");
 const listTasks = async (req, res) => {
   const { _id: owner } = req.user;
   const result = await Task.find({ owner }, "-createdAt -updatedAt");
+  // **** find - 1парам - об'єкт пошуку, 2 - список полів які треба або не треба повертати, 3 - додаткові налаштування
+  // const { page = 1, limit = 10 } = req.query;
+  // const skip = (page - 1) * limit;
+  // ** .populate("owner") - цей запис додасть до кожного завдання об'єкт юзера з полями, які ми вкажемо після , **
+  // const result = await Task.find({ owner }, "-createdAt -updatedAt", {
+  //   skip,
+  //   limit,
+  // }).populate("owner", "name email");
+
   res.json(result);
 };
 
 const addTask = async (req, res) => {
-  // console.log(req.params);
   const { _id: owner } = req.user;
   const result = await Task.create({ ...req.body, owner });
-  // const result = await Task.create({ ...req.body });
   res.status(201).json(result);
 };
 
