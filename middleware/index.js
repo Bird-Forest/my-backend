@@ -3,6 +3,7 @@ const validateBody = require("./validateBody");
 const isValidId = require("./isValidId");
 const authenticate = require("./authenticate");
 const upload = require("./upload");
+// const cloudupload = require("./cloudupload");
 
 module.exports = {
   ctrlWrapper,
@@ -10,4 +11,5 @@ module.exports = {
   isValidId,
   authenticate,
   upload,
+  // cloudupload,
 };

@@ -1,8 +1,8 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-// const path = require("path");
-// const fs = require("fs/promises");
+const path = require("path");
+const fs = require("fs/promises");
 const gravatar = require("gravatar");
 // const Jimp = require("jimp");
 
@@ -13,7 +13,7 @@ const { nanoid } = require("nanoid");
 
 const { SEKRET_KEY } = process.env;
 
-// const avatarDir = path.join(__dirname, "../", "public", "avatars");
+const avatarDir = path.join(__dirname, "../", "public", "avatars");
 
 const register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -88,6 +88,44 @@ const logout = async (req, res) => {
   });
 };
 
+const updateAvatar = async (req, res) => {
+  const { _id } = req.user;
+  console.log("udateAvatar", req.user);
+
+  const { path: tempUpload, file } = req.file;
+  console.log("file", req.file);
+
+  const resultUpload = path.join(avatarDir, file);
+
+  await fs.rename(tempUpload, resultUpload);
+
+  const avatarURL = path.join("avatars", file);
+  console.log("Avatar", avatarURL);
+
+  // if (!req.file) {
+  //   return res.status(400).json({ message: "No file uploaded" });
+  // }
+
+  // const avatarURL = req.file.path;
+  await User.findByIdAndUpdate(_id, { avatarURL });
+
+  // user.avatarURL = avatarURL;
+  // user.save();
+
+  res.json({ avatarURL });
+};
+
+module.exports = {
+  register: ctrlWrapper(register),
+  // verifyEmail: ctrlWrapper(verifyEmail),
+  // resendVerifyEmail: ctrlWrapper(resendVerifyEmail),
+  login: ctrlWrapper(login),
+  current: ctrlWrapper(current),
+  logout: ctrlWrapper(logout),
+  // updateStatusUser: ctrlWrapper(updateStatusUser),
+  updateAvatar: ctrlWrapper(updateAvatar),
+};
+
 // const updateStatusUser = async (req, res) => {
 //   const { _id } = req.params;
 //   const subscription = await User.findByIdAndUpdate(_id, req.body, {
@@ -123,29 +161,3 @@ const logout = async (req, res) => {
 //     avatarURL,
 //   });
 // };
-
-const updateAvatar = async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: "No file uploaded" });
-  }
-  const { _id } = req.user;
-
-  const avatarURL = req.file.path;
-  const user = await User.findByIdAndUpdate(_id);
-
-  user.avatarURL = avatarURL;
-  user.save();
-
-  res.json({ avatarURL: user.avatarURL });
-};
-
-module.exports = {
-  register: ctrlWrapper(register),
-  // verifyEmail: ctrlWrapper(verifyEmail),
-  // resendVerifyEmail: ctrlWrapper(resendVerifyEmail),
-  login: ctrlWrapper(login),
-  current: ctrlWrapper(current),
-  logout: ctrlWrapper(logout),
-  // updateStatusUser: ctrlWrapper(updateStatusUser),
-  updateAvatar: ctrlWrapper(updateAvatar),
-};
