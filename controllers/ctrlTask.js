@@ -19,6 +19,28 @@ const listTasks = async (req, res) => {
   res.json(result);
 };
 
+const listTasksByColor = async (req, res) => {
+  const { _id: owner } = req.user;
+  console.log("ByColor user", req.user);
+  const { newColor } = req.params.color;
+  console.log("ByColor query", req.params.color);
+  // const result = await Task.find({ owner }, { color: newColor });
+  const result = await Task.find(
+    { owner },
+    {
+      color: newColor,
+    },
+    "-createdAt -updatedAt"
+  );
+  console.log("ByColor result", result);
+
+  const priorTasks = result.filter((task) => task.color === newColor);
+
+  console.log(priorTasks);
+
+  res.json(priorTasks);
+};
+
 const addTask = async (req, res) => {
   const { _id: owner } = req.user;
   const result = await Task.create({ ...req.body, owner });
@@ -36,22 +58,11 @@ const deleteTask = async (req, res) => {
   res.json(result);
 };
 
-// const updateTask = async (req, res) => {
-//   const { taskId } = req.params;
-//   const result = await Task.findByIdAndUpdate(taskId, req.body, {
-//     new: true,
-//   });
-//   if (!result) {
-//     throw HttpError(404, "Not found");
-//   }
-//   res.json(result);
-// };
-
 const updateColorTask = async (req, res) => {
   const { taskId } = req.params;
   const newColor = req.body.color;
-  console.log("id", taskId);
-  console.log("color", newColor);
+  // console.log("id", taskId);
+  // console.log("color", newColor);
 
   const updatedTask = await Task.findByIdAndUpdate(
     taskId,
@@ -59,18 +70,6 @@ const updateColorTask = async (req, res) => {
     { new: true } // Возвращать обновленный документ
   );
   console.log("upTask", updatedTask);
-  // const { newTask } = req.params;
-  // console.log("newTask", newTask);
-  // console.log(req.query);
-  // console.log("Params", req.params);
-  // const result = await Task.findByIdAndUpdate(
-  //   newTask.taskId,
-  //   {
-  //     ...req.body,
-  //     color: newTask.newColor,
-  //   },
-  //   { new: true }
-  // );
 
   if (!updatedTask) {
     throw HttpError(404, "Not found");
@@ -78,20 +77,10 @@ const updateColorTask = async (req, res) => {
   res.json(updatedTask);
 };
 
-// const updateStatusTask = async (req, res) => {
-//   const { taskId } = req.params;
-//   const result = await Task.findByIdAndUpdate(taskId, req.body);
-//   if (!result) {
-//     throw HttpError(404, "Not found");
-//   }
-//   res.json(result);
-// };
-
 module.exports = {
   listTasks: ctrlWrapper(listTasks),
   addTask: ctrlWrapper(addTask),
   deleteTask: ctrlWrapper(deleteTask),
-  // updateTask: ctrlWrapper(updateTask),
   updateColorTask: ctrlWrapper(updateColorTask),
-  // updateStatusTask: ctrlWrapper(updateStatusTask),
+  listTasksByColor: ctrlWrapper(listTasksByColor),
 };

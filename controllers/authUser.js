@@ -17,6 +17,7 @@ const avatarDir = path.join(__dirname, "../", "public", "avatars");
 
 const register = async (req, res) => {
   const { name, email, password } = req.body;
+  console.log(req.body);
 
   const user = await User.findOne({ email });
   if (user) {

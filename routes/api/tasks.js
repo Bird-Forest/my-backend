@@ -10,6 +10,12 @@ const { authenticate, validateBody, isValidId } = require("../../middleware");
 
 // ****************
 router.get("/", authenticate, ctrl.listTasks);
+router.get(
+  "/:color",
+  authenticate,
+  validateBody(schemas.updateColorSchema),
+  ctrl.listTasksByColor
+);
 
 router.post("/", authenticate, validateBody(schemas.addSchema), ctrl.addTask);
 
@@ -22,21 +28,5 @@ router.patch(
   validateBody(schemas.updateColorSchema),
   ctrl.updateColorTask
 );
-
-// router.patch(
-//   "/:taskId/completed",
-//   authenticate,
-//   isValidId,
-//   validateBody(schemas.updateCompletedSchema),
-//   ctrl.updateStatusTask
-// );
-
-// router.patch(
-//   "/:taskId/color",
-//   authenticate,
-//   isValidId,
-//   validateBody(schemas.updateColorSchema),
-//   ctrl.updateColorTask
-// );
 
 module.exports = router;

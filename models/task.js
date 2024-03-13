@@ -37,7 +37,9 @@ const addSchema = Joi.object({
 // });
 
 const updateColorSchema = Joi.object({
-  color: Joi.string().required(),
+  color: Joi.string()
+    .valid(...colorList)
+    .required(),
 });
 
 const schemas = {
