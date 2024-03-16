@@ -2,9 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const path = require("path");
-const fs = require("fs/promises");
 const gravatar = require("gravatar");
-// const Jimp = require("jimp");
 
 const { User } = require("../models/user");
 const { HttpError } = require("../helper");
@@ -90,75 +88,37 @@ const logout = async (req, res) => {
 };
 
 const updateAvatar = async (req, res) => {
-  const { _id } = req.user;
-  console.log("udateAvatar", req.user);
+  const user = await User.findById(req.user._id);
 
-  const { path: tempUpload, file } = req.file;
-  console.log("file", req.file);
+  const file = req.files.file;
+  if (!file) {
+    return res.json({ error: "incorrect input name" });
+  }
 
-  const resultUpload = path.join(avatarDir, file);
+  const filename = encodeURI(`${user._id}_${file.name}`);
+  const avatarURL = path.join(avatarDir, filename);
 
-  await fs.rename(tempUpload, resultUpload);
+  file.mv(`${avatarURL}`, (err) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send(err);
+    }
+    // console.log("File is uploaded");
 
-  const avatarURL = path.join("avatars", file);
-  console.log("Avatar", avatarURL);
+    User.findByIdAndUpdate(user._id, { avatarURL });
 
-  // if (!req.file) {
-  //   return res.status(400).json({ message: "No file uploaded" });
-  // }
-
-  // const avatarURL = req.file.path;
-  await User.findByIdAndUpdate(_id, { avatarURL });
-
-  // user.avatarURL = avatarURL;
-  // user.save();
-
-  res.json({ avatarURL });
+    res.json({ avatarURL });
+    // res.json({
+    //   fileName: filename,
+    //   filePath: `/avatars/${filename}}`,
+    // });
+  });
 };
 
 module.exports = {
   register: ctrlWrapper(register),
-  // verifyEmail: ctrlWrapper(verifyEmail),
-  // resendVerifyEmail: ctrlWrapper(resendVerifyEmail),
   login: ctrlWrapper(login),
   current: ctrlWrapper(current),
   logout: ctrlWrapper(logout),
-  // updateStatusUser: ctrlWrapper(updateStatusUser),
   updateAvatar: ctrlWrapper(updateAvatar),
 };
-
-// const updateStatusUser = async (req, res) => {
-//   const { _id } = req.params;
-//   const subscription = await User.findByIdAndUpdate(_id, req.body, {
-//     new: true,
-//   });
-
-//   res.json(subscription);
-// };
-
-// const updateAvatar = async (req, res) => {
-//   if (!req.file) {
-//     throw HttpError(404, "Not found");
-//   }
-//   const { _id } = req.user;
-
-//   const { path: tempUpload, originalname } = req.file;
-
-//   await Jimp.read(tempUpload).then((avatar) => {
-//     return avatar
-//       .resize(250, 250) // resize
-//       .quality(60) // set JPEG quality
-//       .write(tempUpload); // save
-//   });
-
-//   const filename = `${_id}_${originalname}`;
-//   const avatarsUpload = path.join(avatarDir, filename);
-//   await fs.rename(tempUpload, avatarsUpload);
-//   const avatarURL = path.join("avatar", filename);
-
-//   await User.findByIdAndUpdate(_id, { avatarURL });
-
-//   res.json({
-//     avatarURL,
-//   });
-// };

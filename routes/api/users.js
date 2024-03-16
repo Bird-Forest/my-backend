@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { validateBody, authenticate, upload } = require("../../middleware");
+const { validateBody, authenticate } = require("../../middleware");
 const { schemas } = require("../../models/user");
 const ctrl = require("../../controllers/authUser");
 
@@ -14,10 +14,10 @@ router.get("/current", authenticate, ctrl.current);
 
 router.post("/logout", authenticate, ctrl.logout);
 
-router.patch(
+router.post(
   "/avatar",
   authenticate,
-  upload.single("avatar"),
+  // upload.single("avatar"),
   ctrl.updateAvatar
 );
 

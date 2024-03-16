@@ -9,13 +9,8 @@ const { schemas } = require("../../models/task");
 const { authenticate, validateBody, isValidId } = require("../../middleware");
 
 // ****************
+
 router.get("/", authenticate, ctrl.listTasks);
-router.get(
-  "/:color",
-  authenticate,
-  validateBody(schemas.updateColorSchema),
-  ctrl.listTasksByColor
-);
 
 router.post("/", authenticate, validateBody(schemas.addSchema), ctrl.addTask);
 
