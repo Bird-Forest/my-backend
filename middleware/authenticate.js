@@ -6,7 +6,6 @@ const { SEKRET_KEY } = process.env;
 // ** Перевірка валідності токена та користувача, назва функції !!з маленької літери**
 const authenticate = async (req, res, next) => {
   const { authorization = "" } = req.headers;
-
   // ** перевірка токена ***
   const [bearer, token] = authorization.split(" ");
   if (bearer !== "Bearer") {
@@ -15,7 +14,6 @@ const authenticate = async (req, res, next) => {
   try {
     // ** визначаємо користувача по id **
     const { id } = jwt.verify(token, SEKRET_KEY);
-
     //   ** шукаємо користувача **
     const user = await User.findById(id);
     // console.log("Authenticate token", user);

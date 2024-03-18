@@ -15,10 +15,9 @@ const listTasks = async (req, res) => {
   //   skip,
   //   limit,
   // }).populate("owner", "name email");
-
   res.json(result);
 };
-
+// ****** Not work **********
 const listTasksByColor = async (req, res) => {
   const { _id: owner } = req.user;
   console.log("ByColor user", req.user);
@@ -49,9 +48,9 @@ const addTask = async (req, res) => {
 
 const deleteTask = async (req, res) => {
   const { taskId } = req.params;
-  console.log("_id", taskId);
+  // console.log("_id", taskId);
   const result = await Task.findByIdAndDelete(taskId);
-  console.log("result", result);
+  // console.log("result", result);
   if (!result) {
     throw HttpError(404, "Not found");
   }
@@ -63,14 +62,12 @@ const updateColorTask = async (req, res) => {
   const newColor = req.body.color;
   // console.log("id", taskId);
   // console.log("color", newColor);
-
   const updatedTask = await Task.findByIdAndUpdate(
     taskId,
     { color: newColor },
     { new: true } // Возвращать обновленный документ
   );
-  console.log("upTask", updatedTask);
-
+  // console.log("upTask", updatedTask);
   if (!updatedTask) {
     throw HttpError(404, "Not found");
   }

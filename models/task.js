@@ -29,12 +29,7 @@ taskSchema.post("save", handleMongooseError);
 const addSchema = Joi.object({
   title: Joi.string().required(),
   color: Joi.string(),
-  // completed: Joi.boolean().required(),
 });
-
-// const updateCompletedSchema = Joi.object({
-//   completed: Joi.boolean().required(),
-// });
 
 const updateColorSchema = Joi.object({
   color: Joi.string()
@@ -44,7 +39,6 @@ const updateColorSchema = Joi.object({
 
 const schemas = {
   addSchema,
-  // updateCompletedSchema,
   updateColorSchema,
 };
 
